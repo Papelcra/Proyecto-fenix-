@@ -60,11 +60,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'clubfenix.wsgi.application'
 
-# --- BASE DE DATOS ---
 DATABASE_URL = os.environ.get('DATABASE_URL', '')
 
 if DATABASE_URL:
-    # Usar configuración de producción (Railway)
+    # Producción Railway: Usa la URL que define Railway
     DATABASES = {
         'default': dj_database_url.config(
             default=DATABASE_URL,
@@ -72,23 +71,22 @@ if DATABASE_URL:
             ssl_require=True
         )
     }
-    # Eliminar 'sslmode' de OPTIONS si aparece (por bug con mysqlclient en Railway)
+    # Quita 'sslmode' si aparece (Railway bug)
     if 'OPTIONS' in DATABASES['default']:
         if 'sslmode' in DATABASES['default']['OPTIONS']:
             DATABASES['default']['OPTIONS'].pop('sslmode')
 else:
-    # Local MySQL de desarrollo
+    # Local development
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'club_fenix',
-            'USER': 'root',
-            'PASSWORD': '1014',
-            'HOST': 'localhost',
-            'PORT': '3306',
+            'NAME': os.environ.get('DB_NAME', 'club_fenix'),
+            'USER': os.environ.get('DB_USER', 'root'),
+            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+            'HOST': os.environ.get('DB_HOST', 'localhost'),
+            'PORT': os.environ.get('DB_PORT', '3306'),
         }
     }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
