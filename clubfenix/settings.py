@@ -87,7 +87,7 @@ else:
             'PORT': os.environ.get('DB_PORT', '3306'),
         }
     }
-
+    
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
