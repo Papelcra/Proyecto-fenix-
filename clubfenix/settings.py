@@ -64,6 +64,7 @@ WSGI_APPLICATION = 'clubfenix.wsgi.application'
 DATABASE_URL = os.environ.get('DATABASE_URL', '')
 
 if DATABASE_URL:
+    # Usar configuración de producción (Railway)
     DATABASES = {
         'default': dj_database_url.config(
             default=DATABASE_URL,
@@ -71,10 +72,6 @@ if DATABASE_URL:
             ssl_require=True
         )
     }
-    # Fix para argumento de sslmode en MySQL
-    opts = DATABASES['default'].setdefault('OPTIONS', {})
-    if 'sslmode' in opts:
-        opts['ssl_mode'] = opts.pop('sslmode')
 else:
     # Local MySQL de desarrollo
     DATABASES = {
