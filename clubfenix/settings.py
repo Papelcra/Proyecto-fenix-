@@ -102,3 +102,4 @@ LOGIN_REDIRECT_URL = '/'              # ignorado, usamos nuestra lógica en inde
 LOGOUT_REDIRECT_URL = '/'
 MEDIA_URL = '/documentos/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'documentos')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
