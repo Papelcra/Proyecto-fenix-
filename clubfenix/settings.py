@@ -72,6 +72,10 @@ if DATABASE_URL:
             ssl_require=True
         )
     }
+    # Eliminar 'sslmode' de OPTIONS si aparece (por bug con mysqlclient en Railway)
+    if 'OPTIONS' in DATABASES['default']:
+        if 'sslmode' in DATABASES['default']['OPTIONS']:
+            DATABASES['default']['OPTIONS'].pop('sslmode')
 else:
     # Local MySQL de desarrollo
     DATABASES = {
