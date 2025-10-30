@@ -103,3 +103,12 @@ LOGOUT_REDIRECT_URL = '/'
 MEDIA_URL = '/documentos/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'documentos')
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+import dj_database_url
+import os
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL')
+    )
+}
