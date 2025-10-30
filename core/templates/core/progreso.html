@@ -1,0 +1,6 @@
+<h2>Progreso del alumno</h2>
+<ul>
+    {% for p in progreso %}
+        <li>{{ p.nivel.nombre }} - {% if p.completado %}✅{% else %}❌{% endif %}</li>
+    {% endfor %}
+</ul>

@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Mis Pagos | Alumno{% endblock %}
+{% block content %}
+<style>
+body{background:linear-gradient(to right,#111,#0e3752);color:white;}
+.pagos-alumno-panel{max-width:850px;margin:48px auto 45px auto;background:#142f46;border-radius:18px;padding:36px 28px;box-shadow:0 2px 22px #00bffd2c;}
+h2{color:#00bfff;margin-bottom:26px;font-weight:700;}
+.pagos-table{width:100%;background:#132947;border-radius:13px;margin-top:18px;box-shadow:0 2px 15px #0b153322;}
+.pagos-table th, .pagos-table td{color:#fff;border-bottom:1px solid #22557944;padding:11px;text-align:center;}
+.pagos-table th{background:#0f2545;color:#23ebff;font-weight:600;}
+.estado-validado{color:#17e76c;font-weight:700;}
+.estado-rechazado{color:#fb384a;font-weight:700;}
+.estado-pendiente{color:#eabb19;font-weight:700;}
+.estado-enviado{color:#3edbfd;font-weight:700;}
+.btn-panel {
+  display:inline-block;margin-bottom:18px;background:#10253b;color:#00dbb8!important;
+  border:2px solid #00dbb8;border-radius:10px;font-weight:600;font-size:1em;
+  padding:8px 22px;transition:0.2s;text-align:center;text-decoration:none!important;
+}
+.btn-panel:hover{background:#00dbb8;color:#10253b!important;}
+.btn-simple {
+  background:#00bfff;color:#fff;border-radius:8px;padding:5px 14px;font-weight:600;border:none;margin:2px;text-decoration:none;
+}
+.btn-simple:hover{background:#0099cc;}
+</style>
+<div class="pagos-alumno-panel">
+  <a href="{% url 'alumno:dashboard' %}" class="btn-panel">⬅ Volver al Dashboard</a>
+  <h2>Mis pagos y comprobantes</h2>
+  <table class="pagos-table">
+    <thead>
+      <tr>
+        <th>Descripción</th>
+        <th>Monto</th>
+        <th>Fecha</th>
+        <th>Estado</th>
+        <th>Comprobante</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for pago in pagos %}
+        <tr>
+          <td>{{ pago.descripcion }}</td>
+          <td>${{ pago.monto|floatformat:2 }}</td>
+          <td>{{ pago.fecha_pago }}</td>
+          <td><span class="estado-{{ pago.estado|lower }}">{{ pago.get_estado_display }}</span></td>
+          <td>
+            {% if pago.comprobante %}
+              <a href="{{ pago.comprobante.url }}" target="_blank" class="btn-simple">Ver comprobante</a>
+            {% else %}
+              No enviado
+            {% endif %}
+          </td>
+          <td>
+            {% if pago.estado == 'PENDIENTE' %}
+              <a href="{% url 'alumno:subir_comprobante' pago.id %}" class="btn-simple">Subir comprobante</a>
+            {% elif pago.estado == 'ENVIADO' and pago.comprobante %}
+              Comprobante pendiente por validar
+            {% elif pago.estado == 'VALIDADO' %}
+              Comprobante aprobado
+            {% elif pago.estado == 'RECHAZADO' %}
+              Comprobante rechazado
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6" style="color:#fff;">No tienes pagos registrados.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

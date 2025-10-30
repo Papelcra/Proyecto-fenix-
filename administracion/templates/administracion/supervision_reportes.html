@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+body {
+  background: #081d2f;
+}
+.supervision-container {
+  max-width: 1150px;
+  margin: 44px auto 30px auto;
+  background: #10253b;
+  border-radius: 18px;
+  padding: 38px 34px;
+  box-shadow: 0 2px 22px #00bffd22;
+}
+h2 { color:#00bfff;font-weight:700;margin-bottom:26px;}
+h3 { color: #27eaff; font-size:1.3em; margin-bottom:13px;}
+.filter-form {
+  display: flex; flex-wrap:wrap; gap:16px; align-items:end; background:#132947;padding:18px 20px; border-radius:11px; margin-bottom:35px; box-shadow:0 2px 13px #0c2c4040;
+}
+.filter-form label { color:#23ebff;font-weight:600;}
+.filter-form select, .filter-form input[type="text"] {
+  background:#0d233d;border-radius:8px;border:1.2px solid #23ebff78;color:#c6fdff;padding:6px 9px;font-size:1em;
+}
+.filter-form button, .filter-form .btn-secondary {
+  background: linear-gradient(90deg,#00bfff,#01ffe0); border:none;color:#093653;
+  border-radius:10px;font-weight:600;padding:6.5px 18px;font-size:1.07em;transition:0.18s;cursor:pointer;box-shadow:0 2px 5px #00bffd22;
+  margin-left:7px;
+}
+.filter-form button:hover, .filter-form .btn-secondary:hover { background:#01ffe0;color:#003b79;}
+.card {
+  background: #132947;
+  border-radius: 16px;
+  padding: 32px 22px 22px 22px;
+  margin-bottom: 34px;
+  box-shadow: 0 2px 14px #00bffd26;
+}
+.azul-table {
+  width: 100%;
+  border-radius: 12px;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top:18px;
+  background: #173662;
+  box-shadow:0 2px 12px #001a3340;
+}
+.azul-table thead th {
+  background: #103355;
+  color: #19e4f9;
+  font-weight: 600;
+  border-bottom: 2px solid #19e4f988;
+}
+.azul-table td, .azul-table th {
+  color: #f4ffff;
+  background: #173662;
+  padding: 10px 7px;
+  border-bottom: 1px solid #12527272;
+  vertical-align: top;
+  text-align: center;
+}
+.btn-dashboard {
+  background: #10253b;
+  color: #00dbb8!important;
+  border: 2px solid #00dbb8;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1.1em;
+  padding: 9px 28px;
+  transition: 0.2s;
+  margin-bottom: 21px;
+  display:inline-block;
+  text-decoration:none;
+}
+.btn-dashboard:hover {
+  background: #00dbb8;
+  color: #10253b!important;
+}
+@media (max-width: 900px) {
+  .supervision-container {padding:14px 5px;}
+  .card{padding:10px 4px;}
+  .filter-form {gap:8px;padding:10px;}
+}
+</style>
+<div class="supervision-container">
+  <!-- VOLVER AL DASHBOARD -->
+  <a href="{% url 'administracion:dashboard_admin' %}" class="btn-dashboard">⬅ Volver al Dashboard</a>
+
+  <h2>Supervisión y Reportes</h2>
+
+  <form method="get" class="mb-3 filter-form">
+      <label for="grupo">Grupo:</label>
+      <select name="grupo" id="grupo">
+          <option value="">Todos</option>
+          {% for grupo_data in grupos %}
+              <option value="{{ grupo_data.grupo.id }}" {% if request.GET.grupo|default:'' == grupo_data.grupo.id|stringformat:"s" %}selected{% endif %}>{{ grupo_data.grupo.nombre }}</option>
+          {% endfor %}
+      </select>
+      <label for="profesor">Profesor:</label>
+      <select name="profesor" id="profesor">
+          <option value="">Todos</option>
+          {% for profesor in profesores %}
+              <option value="{{ profesor.id }}" {% if request.GET.profesor|default:'' == profesor.id|stringformat:"s" %}selected{% endif %}>
+                  {% if profesor.user.first_name or profesor.user.last_name %}
+                      {{ profesor.user.first_name }} {{ profesor.user.last_name }}
+                  {% else %}
+                      {{ profesor.user.username }}
+                  {% endif %}
+              </option>
+          {% endfor %}
+      </select>
+      <label for="alumno">Alumno:</label>
+      <input type="text" name="alumno" id="alumno" value="{{ request.GET.alumno|default:'' }}" placeholder="Nombre alumno">
+      <button type="submit">Filtrar</button>
+      <a href="?export=csv" class="btn btn-secondary">Exportar CSV</a>
+  </form>
+
+  {% for grupo_data in grupos %}
+      <div class="card mb-4">
+          <h3>
+              Grupo: {{ grupo_data.grupo.nombre }}
+              (Profesor:
+                {% if grupo_data.profesor.user.first_name or grupo_data.profesor.user.last_name %}
+                    {{ grupo_data.profesor.user.first_name }} {{ grupo_data.profesor.user.last_name }}
+                {% else %}
+                    {{ grupo_data.profesor.user.username }}
+                {% endif %}
+              )
+          </h3>
+          <table class="azul-table">
+              <thead>
+                  <tr>
+                      <th>Alumno</th>
+                      <th>% Asist.</th>
+                      <th>% Faltas</th>
+                      <th>Observación última asistencia</th>
+                      <th>Progreso/Nivel</th>
+                      <th>Comentarios</th>
+                      <th>Completado</th>
+                  </tr>
+              </thead>
+              <tbody>
+              {% for alumno_data in grupo_data.alumnos %}
+                  <tr>
+                      <td>
+                          {% if alumno_data.alumno.user.first_name or alumno_data.alumno.user.last_name %}
+                              {{ alumno_data.alumno.user.first_name }} {{ alumno_data.alumno.user.last_name }}
+                          {% else %}
+                              {{ alumno_data.alumno.user.username }}
+                          {% endif %}
+                      </td>
+                      <td>{{ alumno_data.porcentaje_asistencias|floatformat:1 }}%</td>
+                      <td>{{ alumno_data.porcentaje_faltas|floatformat:1 }}%</td>
+                      <td>{{ alumno_data.observacion }}</td>
+                      <td>
+                          {% for prog in alumno_data.progresos %}
+                              {{ prog.nivel }}<br>
+                          {% endfor %}
+                      </td>
+                      <td>
+                          {% for prog in alumno_data.progresos %}
+                              {{ prog.comentarios }}<br>
+                          {% endfor %}
+                      </td>
+                      <td>
+                          {% for prog in alumno_data.progresos %}
+                              {% if prog.completado %}Sí{% else %}No{% endif %}<br>
+                          {% endfor %}
+                      </td>
+                  </tr>
+              {% endfor %}
+              </tbody>
+          </table>
+      </div>
+  {% endfor %}
+</div>
+{% endblock %}

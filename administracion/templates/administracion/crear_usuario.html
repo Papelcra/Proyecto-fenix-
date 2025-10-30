@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+body { background: #081d2f; }
+.panel-dark {
+  max-width: 430px; margin: 45px auto 30px auto; background: #10253b;
+  border-radius: 16px; padding: 38px;
+  box-shadow: 0 2px 20px #00bffd1a;
+}
+h2 { color: #00befc; text-align: center; margin-bottom: 35px;}
+.form-group { margin-bottom: 21px;}
+label { display: block; color:#aee5ff; font-weight: 600; margin-bottom: 7px;}
+input, select { width:100%; padding:9px; border-radius:7px; border:1px solid #003d74; background:#092139; color:#b7f5ff; }
+.btn { font-size: 1em; font-weight: 600; border-radius: 7px; border: none; padding:.8em 1.2em; transition: background .2s;}
+.btn-success { background:#00dbb8; color:#fff;}
+.btn-success:hover { background:#15f38e; color:#303e4d;}
+.btn-secondary { background:#121a3a; color:#a8e7ff; margin-top:18px; display:inline-block;}
+.btn-secondary:hover { background:#092139; color:#00befc;}
+</style>
+<div class="panel-dark">
+  <h2>Crear Usuario</h2>
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label>Usuario:</label>
+      <input type="text" name="username" required>
+    </div>
+    <div class="form-group">
+      <label>Email:</label>
+      <input type="email" name="email">
+    </div>
+    <div class="form-group">
+      <label>Rol:</label>
+      <select name="rol">
+        <option value="ADMIN">Admin</option>
+        <option value="PROFESOR">Profesor</option>
+        <option value="ALUMNO">Alumno</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Contraseña:</label>
+      <input type="password" name="password" required>
+    </div>
+    <button type="submit" class="btn btn-success" style="width:100%;">Crear usuario</button>
+  </form>
+  <a href="{% url 'administracion:panel_usuarios' %}" class="btn btn-secondary" style="width:100%;">⬅ Volver al panel</a>
+</div>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Gestión de Pagos y Membresías{% endblock %}
+{% block content %}
+<style>
+body {background:linear-gradient(to right,#111,#0e3752);}
+.table-panel {max-width:950px;margin:45px auto;background:#142f46;padding:36px 20px;border-radius:17px;box-shadow:0 2px 23px #00bffd21;}
+.pagos-table {width:100%;background:#132947;border-radius:13px;margin-top:18px;}
+.pagos-table th,.pagos-table td {color:#fff;border-bottom:1px solid #22557944;padding:11px;text-align:center;}
+.pagos-table th {background:#0f2545;color:#23ebff;}
+.estado-validado{color:#17e76c;font-weight:700;}
+.estado-rechazado{color:#fb384a;font-weight:700;}
+.estado-pendiente{color:#eabb19;font-weight:700;}
+.estado-enviado{color:#3edbfd;font-weight:700;}
+.btn-dashboard {
+  display:inline-block;margin-bottom:16px;background:#10253b;color:#00dbb8!important;
+  border:2px solid #00dbb8;border-radius:10px;font-weight:600;font-size:1em;
+  padding:8px 22px;transition:0.2s;text-align:center;text-decoration:none!important;
+}
+.btn-dashboard:hover{background:#00dbb8;color:#10253b!important;}
+.action-group {
+  display:flex; flex-direction:column; gap:10px; align-items:center; justify-content:center;
+}
+.btn-simple {
+  background:#00bfff;color:#fff;border-radius:8px;padding:7px 19px;font-weight:600;border:none;text-decoration:none;transition:0.17s;min-width:110px;text-align:center;cursor:pointer;
+}
+.btn-simple:hover{background:#0099cc;}
+.btn-elim {background:#c90026;}
+.btn-elim:hover {background:#fb384a;}
+</style>
+<div class="table-panel">
+  <a href="{% url 'administracion:dashboard_admin' %}" class="btn-dashboard">⬅ Volver al Dashboard</a>
+  <a href="{% url 'administracion:crear_pago' %}" class="btn-simple" style="float:right;margin-bottom:9px;">➕ Asignar nuevo pago</a>
+  <h2 style="color:#00bfff;margin-bottom:8px;">Todos los pagos asignados</h2>
+  <table class="pagos-table">
+    <thead>
+      <tr>
+        <th>Alumno</th>
+        <th>Monto</th>
+        <th>Fecha</th>
+        <th>Descripción</th>
+        <th>Estado</th>
+        <th>Comprobante</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for pago in pagos %}
+      <tr>
+        <td>{{ pago.alumno.user.get_full_name|default:pago.alumno.user.username }}</td>
+        <td>${{ pago.monto|floatformat:2 }}</td>
+        <td>{{ pago.fecha_pago }}</td>
+        <td>{{ pago.descripcion }}</td>
+        <td><span class="estado-{{ pago.estado|lower }}">{{ pago.get_estado_display }}</span></td>
+        <td>
+          {% if pago.comprobante %}
+            <a href="{{ pago.comprobante.url }}" target="_blank" class="btn-simple">Ver comprobante</a>
+          {% else %}
+            No enviado
+          {% endif %}
+        </td>
+        <td>
+          <div class="action-group">
+            {% if pago.estado == 'ENVIADO' and pago.comprobante %}
+              <a href="{% url 'administracion:validar_pago' pago.id %}" class="btn-simple">Validar</a>
+              <a href="{% url 'administracion:rechazar_pago' pago.id %}" class="btn-simple">Rechazar</a>
+            {% elif pago.estado == 'PENDIENTE' %}
+              <span style="color:#fd0;font-weight:600;">Esperando comprobante</span>
+            {% endif %}
+            <a href="{% url 'administracion:eliminar_pago' pago.id %}" class="btn-simple btn-elim">Eliminar</a>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" style="color:#fff;">No hay pagos registrados</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

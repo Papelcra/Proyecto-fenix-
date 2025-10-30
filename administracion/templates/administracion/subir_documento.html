@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+body { background: #081d2f; }
+.panel-dark {
+  max-width: 490px; margin: 55px auto 30px auto; background: #10253b;
+  border-radius: 16px; padding: 40px;
+  box-shadow: 0 2px 18px #06b5da55;
+}
+h2 { color: #00befc; text-align: center; margin-bottom: 29px;}
+label { color:#beedff; font-weight:600; padding-left:1px;}
+input[type="file"], input[type="text"], textarea, select {
+  width:100%; background:#092139; color:#c9fdff; border-radius:7px; border:1px solid #03b4ee; padding:7px; margin-bottom:13px;
+}
+textarea { min-height:40px;}
+.btn-success { background:#00dbb8; color:#fff; width:100%;}
+.btn-success:hover { background:#00bfff!important; color:#092139;}
+.btn-secondary { background:#121a3a; color:#a8e7ff; margin-top:17px; width:100%;}
+.btn-secondary:hover { background:#092139; color:#00befc;}
+</style>
+<div class="panel-dark">
+  <h2>Subir documento a {{ grupo.nombre }}</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <label>Alumno:</label>
+    <select name="alumno" required>
+      <option value="">Seleccionar alumno...</option>
+      {% for alumno in alumnos %}
+        <option value="{{ alumno.id }}">{{ alumno.user.get_full_name }} ({{ alumno.user.username }})</option>
+      {% endfor %}
+    </select>
+    
+    <label>Tipo de documento:</label>
+    <select name="tipo" required>
+      <option value="CEDULA">Cédula</option>
+      <option value="EPS">EPS</option>
+      <option value="AUTORIZACION">Autorización</option>
+    </select>
+    
+    <label>Archivo:</label>
+    <input type="file" name="archivo" required>
+    
+    <label>Descripción:</label>
+    <textarea name="descripcion"></textarea>
+    
+    <button type="submit" class="btn btn-success">Subir</button>
+  </form>
+  <a href="{% url 'administracion:panel_usuarios' %}" class="btn btn-secondary">⬅ Volver al panel</a>
+</div>
+{% endblock %}

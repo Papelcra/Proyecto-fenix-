@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+body { background:#081d2f; }
+.panel-dark {
+  max-width:1120px; margin:45px auto; background:#10253b; border-radius:17px;padding:42px;
+  box-shadow: 0 2px 22px #00bffd22;
+}
+h2 { color: #00bfff; text-align: center; margin-bottom: 32px; font-weight:700;}
+.validar-table {
+  width:100%;
+  background:#132947;
+  border-radius: 13px;
+  border-collapse: separate;
+  border-spacing: 0;
+  box-shadow:0 2px 15px #0b153322;
+  margin-bottom:24px;
+  overflow:hidden;
+}
+.validar-table thead th {
+  background: #0f2545;
+  color: #23ebff; font-weight: 600; border-bottom:2px solid #1484af;
+  padding:11px;
+}
+.validar-table td, .validar-table th {
+  color: #fff;
+  border-bottom:1px solid #22557944;
+  padding:11px;
+  text-align:center;
+}
+.btn-valida, .btn-rechaza {
+  padding:0.3em 1em; font-size:1em; border-radius:7px; font-weight:600; border:none; cursor:pointer;margin:0 3px; transition: background 0.2s;
+}
+.btn-valida { background:#14e086; color:#fff;}
+.btn-valida:hover{ background:#18a847;}
+.btn-rechaza { background:#ff3f3f; color:white;}
+.btn-rechaza:hover{ background:#bf2121;}
+.btn-outline-danger {
+  background:#bf2121; color:#fff!important; border-radius:7px; padding:2px 12px;
+  display:inline-block; border:none; margin-left:4px;
+}
+.btn-outline-danger:hover { background:#ef4a67;}
+.estado-validado { color:#17e76c; font-weight:700;}
+.estado-rechazado { color:#fb384a; font-weight:700;}
+.estado-pendiente { color: #eabb19; font-weight:700;}
+.btn-dashboard {
+  display:inline-block;
+  background: #10253b;
+  color: #00dbb8!important;
+  border:2px solid #00dbb8;
+  border-radius:10px;
+  font-weight:600;
+  font-size:1.09em;
+  padding:9px 28px;
+  transition:0.2s;
+  margin-bottom:21px;
+  text-decoration:none;
+}
+.btn-dashboard:hover {
+  background:#00dbb8;
+  color:#10253b!important;
+}
+.filter-form {
+  display: flex; flex-wrap:wrap; gap:16px; align-items:end; background:#132947;padding:18px 20px; border-radius:11px; margin-bottom:35px; box-shadow:0 2px 13px #0c2c4040;
+}
+.filter-form label { color:#23ebff;font-weight:600;}
+.filter-form select, .filter-form input[type="text"] {
+  background:#0d233d;border-radius:8px;border:1.2px solid #23ebff78;color:#c6fdff;padding:6px 9px;font-size:1em;
+}
+.filter-form button {
+  background: linear-gradient(90deg,#00bfff,#01ffe0); border:none;color:#093653;
+  border-radius:10px;font-weight:600;padding:6.5px 18px;font-size:1.07em;transition:0.18s;cursor:pointer;box-shadow:0 2px 5px #00bffd22;
+  margin-left:7px;
+}
+.filter-form button:hover { background:#01ffe0;color:#003b79;}
+@media (max-width: 900px) {
+  .panel-dark {padding:20px;}
+  .validar-table td, .validar-table th {font-size:0.95em;padding:7px;}
+  .filter-form {gap:8px;padding:10px;}
+}
+</style>
+<div class="panel-dark">
+  <a href="{% url 'administracion:dashboard_admin' %}" class="btn-dashboard mb-3">⬅ Volver al Dashboard</a>
+  <h2>Validación de documentos</h2>
+
+  <form method="get" class="mb-3 filter-form">
+    <label for="grupo">Grupo:</label>
+    <select name="grupo" id="grupo">
+        <option value="">Todos</option>
+        {% for grupo in grupos %}
+            <option value="{{ grupo.id }}" {% if grupo_selected == grupo.id|stringformat:"s" %}selected{% endif %}>{{ grupo.nombre }}</option>
+        {% endfor %}
+    </select>
+    <label for="alumno">Alumno:</label>
+    <input type="text" name="alumno" id="alumno" value="{{ alumno_filtro }}" placeholder="Nombre de alumno">
+    <button type="submit">Filtrar</button>
+  </form>
+
+  <table class="validar-table">
+    <thead>
+      <tr>
+        <th>Alumno</th>
+        <th>Grupo</th>
+        <th>Tipo documento</th>
+        <th>Archivo</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for doc in documentos %}
+      <tr>
+        <td>{{ doc.alumno.user.get_full_name|default:doc.alumno.user.username }}</td>
+        <td>{{ doc.grupo.nombre|default:"-" }}</td>
+        <td>{{ doc.get_tipo_display }}</td>
+        <td>
+          {% if doc.archivo %}
+            <a href="{{ doc.archivo.url }}" target="_blank" style="color:#00bfff;">Ver</a>
+          {% else %}
+            <span style="color:#ea5656;">Pendiente</span>
+          {% endif %}
+        </td>
+        <td>
+          <span class="estado-{{ doc.estado|lower }}">{{ doc.get_estado_display }}</span>
+        </td>
+        <td>
+          {% if doc.estado == 'PENDIENTE' %}
+            <a href="{% url 'administracion:validar_estado_documento' doc.id doc.tipo 'validar' %}" class="btn-valida">Validar</a>
+            <a href="{% url 'administracion:validar_estado_documento' doc.id doc.tipo 'rechazar' %}" class="btn-rechaza">Rechazar</a>
+          {% endif %}
+          <a href="{% url 'administracion:eliminar_documento' doc.id %}" class="btn-outline-danger btn-sm" onclick="return confirm('¿Eliminar este documento?');">🗑️ Eliminar</a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="6" style="color:#fff;">No hay documentos cargados</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

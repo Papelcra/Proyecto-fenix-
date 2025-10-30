@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+body {
+  background: linear-gradient(to right, #002b5b 0%, #081d2f 100%) !important;
+}
+.login-panel {
+  max-width: 420px;
+  margin: 65px auto 30px auto;
+  background: #132947;
+  border-radius: 20px;
+  padding: 35px 32px 28px 32px;
+  box-shadow: 0 2px 22px #00bffd33;
+}
+.login-panel h2 {
+  color: #00bfff;
+  text-align: center;
+  margin-bottom: 32px;
+}
+.login-panel .subtitle {
+  color: #ffd700;
+}
+.login-panel label {
+  color: #beedff;
+  font-weight: 600;
+}
+.login-panel input {
+  width: 100%;
+  background: #092139;
+  color: #c9fdff;
+  border-radius: 7px;
+  border: 1px solid #03b4ee;
+  padding: 9px;
+  margin-bottom: 15px;
+}
+.login-panel button {
+  width: 100%;
+  background: #ffd700;
+  color: #003b79;
+  border-radius: 9px;
+  padding: 0.7em;
+  font-size: 1.1em;
+  font-weight: 500;
+  border: none;
+  transition: background 0.15s;
+}
+</style>
+<div class="login-panel">
+  <h2>Bienvenido al login de <span class="subtitle">Maestro</span></h2>
+  <form method="post">
+    {% csrf_token %}
+    <label for="username">Usuario</label>
+    <input type="text" name="username" id="username" required autocomplete="username">
+    <label for="password">Contraseña</label>
+    <input type="password" name="password" id="password" required autocomplete="current-password">
+    <button type="submit">Entrar</button>
+    {% if messages %}
+      <ul style="color:#f36;margin-top:13px;text-align:center;">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </form>
+</div>
+{% endblock %}

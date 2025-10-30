@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(to right, #0a0a0a, #002b5b);
+  color: white;
+  overflow-x: hidden;
+}
+
+header {
+  padding: 2rem;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 2px solid rgba(0, 191, 255, 0.3);
+}
+.logo { font-size: 3rem; color: #00bfff; margin-bottom: 0.5rem; }
+header h1 { font-size: 2.5rem; color: #00bfff; margin-bottom: 0.5rem; }
+header p { color: #aaa; font-size: 1.1rem; }
+
+.hero {
+  text-align: center;
+  padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero h2 { font-size: 2rem; margin-bottom: 1rem; color: #00bfff; }
+.hero p { font-size: 1.2rem; color: #ccc; margin-bottom: 3rem; line-height: 1.6; }
+
+.roles-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.role-card {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(0, 191, 255, 0.3);
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  text-align: center;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.role-card:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #00bfff;
+  transform: translateY(-10px);
+  box-shadow: 0 10px 30px rgba(0, 191, 255, 0.4);
+}
+.role-icon { font-size: 5rem; margin-bottom: 1rem; }
+.role-card h3 { font-size: 1.8rem; color: #00bfff; margin-bottom: 1rem; }
+.role-card p { color: #ccc; margin-bottom: 2rem; line-height: 1.5; }
+.btn-role {
+  padding: 0.8rem 2rem;
+  background: linear-gradient(135deg, #00bfff, #0099cc);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-role:hover {
+  background: linear-gradient(135deg, #0099cc, #007799);
+  transform: scale(1.05);
+  box-shadow: 0 5px 20px rgba(0, 191, 255, 0.5);
+}
+.about-section {
+  max-width: 1000px;
+  margin: 4rem auto;
+  padding: 3rem 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  border: 2px solid rgba(0, 191, 255, 0.2);
+}
+.about-section h2 {
+  text-align: center; font-size: 2rem; color: #00bfff; margin-bottom: 2rem;
+}
+.about-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+.about-item { text-align: center; padding: 1.5rem; }
+.about-item-icon { font-size: 3rem; margin-bottom: 1rem; }
+.about-item h3 { color: #00bfff; margin-bottom: 0.5rem; }
+.about-item p { color: #ccc; line-height: 1.5; }
+footer {
+  background: rgba(0, 0, 0, 0.5);
+  text-align: center;
+  padding: 2rem;
+  margin-top: 4rem;
+  border-top: 2px solid rgba(0, 191, 255, 0.3);
+}
+footer p { color: #aaa; margin-bottom: 1rem; }
+.social-links {
+  display: flex; justify-content: center; gap: 1.5rem; margin-top: 1rem;
+}
+.social-links a {
+  color: #00bfff;
+  font-size: 2rem;
+  transition: all 0.3s;
+  text-decoration: none;
+}
+.social-links a:hover { color: #fff; transform: scale(1.2); }
+@media (max-width: 768px) {
+  header h1 { font-size: 2rem; }
+  .hero h2 { font-size: 1.5rem; }
+  .roles-container { grid-template-columns: 1fr; padding: 1rem; }
+  .role-card { padding: 2rem 1.5rem; }
+  .about-section { margin: 2rem 1rem; padding: 2rem 1rem; }
+}
+</style>
+<header>
+  <div class="logo">🏊‍♂️</div>
+  <h1>Club Deportivo de Natación Fénix</h1>
+  <p>Excelencia, Dedicación y Pasión por la Natación</p>
+</header>
+
+<section class="hero">
+  <h2>¡Bienvenido a nuestra plataforma!</h2>
+  <p>
+    Gestiona tu entrenamiento, pagos y progreso en un solo lugar. 
+    Nuestro sistema está diseñado para ofrecerte la mejor experiencia 
+    tanto para alumnos, maestros y administradores.
+  </p>
+</section>
+
+<div class="roles-container">
+  <div class="role-card" onclick="window.location.href='{% url 'login' %}'">
+    <div class="role-icon">🏊‍♂️</div>
+    <h3>Alumno</h3>
+    <p>Accede a tus clases, consulta tu progreso y gestiona tus pagos de membresía.</p>
+    <a href="{% url 'login' %}" class="btn-role">Ingresar como Alumno</a>
+  </div>
+
+  <div class="role-card" onclick="window.location.href='{% url 'maestro:login' %}'">
+    <div class="role-icon">👨‍🏫</div>
+    <h3>Maestro</h3>
+    <p>Registra asistencia, evalúa el progreso de tus alumnos y genera reportes.</p>
+    <a href="{% url 'maestro:login' %}" class="btn-role">Ingresar como Maestro</a>
+  </div>
+
+  <div class="role-card" onclick="window.location.href='{% url 'administracion:login' %}'">
+    <div class="role-icon">🔐</div>
+    <h3>Administrador</h3>
+    <p>Gestiona alumnos, maestros, pagos y accede a estadísticas completas del club.</p>
+    <a href="{% url 'administracion:login' %}" class="btn-role">Ingresar como Admin</a>
+  </div>
+</div>
+
+<section class="about-section">
+  <h2>Sobre el Club Fénix</h2>
+  <div class="about-content">
+    <div class="about-item">
+      <div class="about-item-icon">🏆</div>
+      <h3>Excelencia</h3>
+      <p>Más de 15 años formando campeones de natación con instructores certificados.</p>
+    </div>
+    <div class="about-item">
+      <div class="about-item-icon">💪</div>
+      <h3>Entrenamiento</h3>
+      <p>Programas personalizados desde nivel principiante hasta competencia profesional.</p>
+    </div>
+    <div class="about-item">
+      <div class="about-item-icon">🌊</div>
+      <h3>Instalaciones</h3>
+      <p>Piscina olímpica con tecnología de punta y áreas de entrenamiento de primer nivel.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2025 Club Deportivo de Natación Fénix | Todos los derechos reservados</p>
+  <p>📍 Dirección: Calle Principal #123, Ciudad | 📞 Teléfono: (123) 456-7890</p>
+  <p>📧 Email: contacto@clubfenix.com</p>
+  <div class="social-links">
+    <a href="#" title="Facebook">📘</a>
+    <a href="#" title="Instagram">📷</a>
+    <a href="#" title="Twitter">🐦</a>
+    <a href="#" title="YouTube">📺</a>
+  </div>
+</footer>
+<script>
+  document.querySelectorAll('.btn-role').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+  });
+</script>
+{% endblock %}

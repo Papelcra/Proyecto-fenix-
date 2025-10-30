@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+body { background: #081d2f; }
+.edit-panel {
+  max-width: 430px;
+  margin: 68px auto 32px auto;
+  background: #132947;
+  border-radius: 20px;
+  padding: 38px 36px 32px 36px;
+  box-shadow: 0 2px 22px #00bffd33;
+}
+.edit-panel h2 {
+  color: #00bfff;
+  text-align: center;
+  margin-bottom: 31px;
+  font-weight: 700;
+}
+.edit-panel label {
+  color: #beedff;
+  font-weight: 600;
+}
+.edit-panel input {
+  width: 100%;
+  background: #092139;
+  color: #c9fdff;
+  border-radius: 7px;
+  border: 1px solid #03b4ee;
+  padding: 9px;
+  margin-bottom: 19px;
+}
+.edit-panel button {
+  width: 100%;
+  background: #00dbb8;
+  color: #fff;
+  border-radius: 9px;
+  padding: 0.7em;
+  font-size: 1.11em;
+  font-weight: 500;
+  border: none;
+  transition: background 0.15s;
+}
+.btn-panel {
+  display: inline-block;
+  margin-top: 20px;
+  background: #10253b;
+  color: #00dbb8 !important;
+  border: 2px solid #00dbb8;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1em;
+  padding: 8px 22px;
+  transition: 0.2s;
+  text-align: center;
+  text-decoration: none !important;
+}
+.btn-panel:hover {
+  background: #00dbb8;
+  color: #10253b !important;
+}
+</style>
+<div class="edit-panel">
+  <h2>Editar grupo</h2>
+  <form method="post">
+      {% csrf_token %}
+      <label>Nombre</label>
+      <input type="text" name="nombre" value="{{ grupo.nombre }}" required>
+      <label>Descripción</label>
+      <input type="text" name="descripcion" value="{{ grupo.descripcion }}" required>
+      <button type="submit">Guardar</button>
+  </form>
+  <a href="{% url 'administracion:panel_usuarios' %}" class="btn-panel">⬅ Volver al Panel</a>
+</div>
+{% endblock %}

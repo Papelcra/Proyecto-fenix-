@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Crear Clase{% endblock %}
+{% block content %}
+<style>
+body {
+  background: linear-gradient(to right, #0a0a0a, #002b5b);
+  color: white;
+}
+.crear-clase-panel {
+  max-width:430px;
+  margin:57px auto 35px auto;
+  background:#173457; padding:32px 32px 29px 32px;
+  border-radius:15px; box-shadow:0 2px 18px #14babf80;
+}
+h2 {
+  color:#23ebff;font-size:2em; margin-bottom:22px; font-weight:700;
+  text-align:center;
+}
+form {margin-bottom:20px;}
+form button, .boton-panel {
+  display:block; width:100%; margin:12px 0 0 0;
+  background: linear-gradient(90deg,#00bfff 65%,#008cc9 100%);
+  color:#fff; border-radius:10px;
+  font-weight:600; font-size:1.19em;
+  padding:11px 0; border:none;
+  transition:.17s; cursor:pointer; box-shadow:0 2px 12px #008cf866;
+  letter-spacing:.6px;
+}
+form button:hover, .boton-panel:hover {
+  background: #0099cc;
+}
+.boton-panel {
+  background: linear-gradient(90deg, #0a65e6 65%, #00e6ff 100%);
+  color: #fff;
+  margin-top:16px;
+  text-decoration: none;
+  text-align: center;
+  font-size:1.08em;
+}
+.boton-lista {background:#002b54; color:#00d8ff;}
+.boton-lista:hover {background:#00bfff;border-radius:12px;color:#fff;}
+</style>
+
+<div class="crear-clase-panel">
+  <h2>Registrar nueva clase</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Crear clase</button>
+  </form>
+  <a href="{% url 'maestro:dashboard' %}" class="boton-panel">← Volver al dashboard</a>
+  <a href="{% url 'maestro:listar_clases' %}" class="boton-panel boton-lista">Ver listado de clases</a>
+</div>
+{% endblock %}

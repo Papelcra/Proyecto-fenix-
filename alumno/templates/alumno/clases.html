@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Mis Clases | Alumno{% endblock %}
+{% block content %}
+<style>
+body { background:linear-gradient(to right, #111, #0e3752); color:white; }
+.clases-alumno-panel {
+  max-width:950px; margin:44px auto 40px auto; padding:32px 28px;
+  background:#142f46; border-radius:18px; box-shadow:0 2px 22px #00bffd26;
+}
+h2 { color:#00bfff; font-size:2em; margin-bottom:27px; font-weight:700;}
+.table-clases {
+  width:100%; background:#132947; border-radius:13px; margin-top:18px;
+  box-shadow:0 2px 13px #0b153322;
+  border-collapse:separate; border-spacing:0;
+}
+.table-clases th, .table-clases td {
+  color:#fff; border-bottom:1px solid #22557944; padding:13px 8px; text-align:center;
+}
+.table-clases th { background:#0f2545; color:#23ebff; font-size:1.1em;}
+.table-clases tr:last-child td {border-bottom:none;}
+.btn-panel {
+  margin:22px 0 11px 0; background:#10253b; color:#00dbb8!important;
+  border:2px solid #00dbb8; border-radius:10px; font-weight:600; font-size:1em;
+  padding:8px 22px; transition:0.2s; text-align:center; text-decoration:none!important;
+  display:inline-block;
+}
+.btn-panel:hover {background:#00dbb8;color:#10253b!important;}
+</style>
+<div class="clases-alumno-panel">
+  <a href="{% url 'alumno:dashboard' %}" class="btn-panel">⬅ Volver al Dashboard</a>
+  <h2>Mis próximas clases y actividades</h2>
+  <table class="table-clases">
+    <thead>
+      <tr>
+        <th>Grupo</th>
+        <th>Fecha</th>
+        <th>Descripción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for clase in clases %}
+        <tr>
+          <td>{{ clase.grupo.nombre }}</td>
+          <td>{{ clase.fecha|date:"d F Y" }}</td>
+          <td>{{ clase.descripcion }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="3" style="color:#fff;">
+            No tienes clases asignadas de momento.
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

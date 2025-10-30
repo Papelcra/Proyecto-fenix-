@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Iniciar Sesión - Club Fénix{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #020024 0%, #090979 35%, #037491 100%);
+        color: #fff;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .login-container {
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 2rem;
+        border-radius: 15px;
+        width: 360px;
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        text-align: center;
+        margin: 60px auto;
+    }
+
+    h2 {
+        color: #00e6ff;
+        margin-bottom: 1.5rem;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+        width: 100%;
+        padding: 0.8rem;
+        margin: 0.8rem 0;
+        border: none;
+        border-radius: 8px;
+        background: #1a1a1a;
+        color: #fff;
+        font-size: 15px;
+    }
+
+    input:focus {
+        outline: none;
+        box-shadow: 0 0 10px #00e6ff;
+    }
+
+    button {
+        width: 100%;
+        padding: 0.8rem;
+        background: #00e6ff;
+        color: #000;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 15px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background: #04b4cc;
+    }
+
+    .messages {
+        margin-top: 1rem;
+    }
+
+    .messages .error {
+        color: #ff7070;
+    }
+</style>
+
+<div class="login-container">
+    <h2>Iniciar Sesión</h2>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Usuario" required>
+        <input type="password" name="password" placeholder="Contraseña" required>
+        <button type="submit">Entrar</button>
+    </form>
+
+    <div class="messages">
+        {% for message in messages %}
+            <p class="{{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load dict_extras %}
+{% block title %}Listado de Clases{% endblock %}
+{% block content %}
+<style>
+body {
+  background: linear-gradient(to right, #0a0a0a, #002b5b);
+  color: white;
+}
+.listar-clases-panel {
+  max-width:800px;
+  margin:45px auto 37px auto;
+  background:#173457; border-radius:17px;
+  box-shadow:0 2px 18px #14babf80;
+  padding:36px 22px 32px 22px;
+}
+h2 {
+  color: #00bfff; font-size:2em;
+  font-weight:700; margin-bottom:24px; text-align:center;
+}
+.botones-superior {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 17px; margin-bottom:14px;
+}
+.btn-panel {
+  background: linear-gradient(90deg,#00bfff 68%, #0099cc 100%);
+  color: #fff; padding:10px 29px;
+  font-size:1.11em; font-weight:600;
+  border: none; border-radius:11px;
+  margin-bottom:2px;
+  text-decoration:none; text-align:center;
+  transition:background .17s, color .13s, box-shadow .17s;
+  box-shadow: 0 2px 10px #14babf60;
+}
+.btn-panel:hover { background:#0099cc; color:#fff; }
+.table-clases {
+  width:100%; background:#132947;
+  border-radius:10px; margin-top:13px;
+  box-shadow:0 2px 12px #00d5ff25;
+  border-collapse:separate; border-spacing:0;
+}
+.table-clases th, .table-clases td {
+  color:#fff; border-bottom:1px solid #22557944;
+  padding:13px 8px; text-align:center;
+}
+.table-clases th {
+  background:#0f2545; color:#23ebff; font-size:1.1em;
+}
+.table-clases tr:last-child td {border-bottom:none;}
+.presente-celda {color:#10ffb5;font-weight:700;}
+.ausente-celda {color:#ff6c77;font-weight:700;}
+</style>
+<div class="listar-clases-panel">
+  <div class="botones-superior">
+    <a href="{% url 'maestro:dashboard' %}" class="btn-panel">⬅ Volver al dashboard</a>
+    <a href="{% url 'maestro:crear_clase' %}" class="btn-panel">➕ Crear nueva clase</a>
+  </div>
+  <h2>Clases registradas</h2>
+  <table class="table-clases">
+    <tr>
+      <th>Grupo</th>
+      <th>Fecha</th>
+      <th>Descripción</th>
+      <th>🎒 Presentes</th>
+      <th>❌ Ausentes</th>
+    </tr>
+    {% for clase in clases %}
+    <tr>
+      <td>{{ clase.grupo.nombre }}</td>
+      <td>{{ clase.fecha|date:"d F Y" }}</td>
+      <td>{{ clase.descripcion }}</td>
+      <td class="presente-celda">{{ resumen|dict_get:clase.id|dict_get:'presentes' }}</td>
+      <td class="ausente-celda">{{ resumen|dict_get:clase.id|dict_get:'ausentes' }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="5" style="color:#fff;"><i>No hay clases registradas.</i></td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

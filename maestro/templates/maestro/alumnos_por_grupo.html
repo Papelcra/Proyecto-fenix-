@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% block title %}Lista de Alumnos | Club Fénix{% endblock %}
+{% block content %}
+<style>
+  body {
+    background: linear-gradient(to right, #0a0a0a, #002b5b)!important;
+    color: white;
+  }
+  .bloque-nav {
+    margin-bottom: 16px;
+  }
+  .bloque-nav a {
+    background: #001a33;
+    color: #00bfff;
+    border-radius: 5px;
+    font-weight: 600;
+    padding: 7px 20px;
+    border: 1px solid #00bfff44;
+    margin-right: 8px;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+  .bloque-nav a:hover {
+    background: #00bfff;
+    color: #fff;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255,255,255,0.09);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  th {
+    color: #00bfff;
+    font-weight: bold;
+    border-top: 2px solid #00bfff44;
+    font-size: 1.1rem;
+    text-align: center;
+  }
+  td {
+    text-align: center;
+  }
+  tr:hover {
+    background: rgba(0, 191, 255, 0.06);
+  }
+  .btn-ver {
+    background: #00bfff;
+    color: white;
+    padding: 0.6rem 1.3rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background 0.3s;
+  }
+  .btn-ver:hover {
+    background: #008fcc;
+  }
+  .alert-fenix { max-width: 540px; margin: 18px auto 22px auto; background: linear-gradient(90deg, #004aad 70%, #00bfff 100%); color: #fff; border-radius: 10px; padding: 1.2em 2em; box-shadow: 0 4px 20px #00bfff44; font-size: 1.18em; border-left: 7px solid #00ffea; font-weight: bold; letter-spacing: .8px; display: flex; align-items: center; gap: 12px; animation: aparecerAlertFenix 1s cubic-bezier(.16,1,.29,.99);}
+  @keyframes aparecerAlertFenix {0% {transform: translateY(-25px); opacity:0;} 100% {transform: translateY(0); opacity:1;}}
+  .alert-fenix.success { background: linear-gradient(90deg, #00938f 65%, #25caa5 100%);}
+  .alert-fenix.info { background: linear-gradient(90deg, #004aad 70%, #00bfff 100%);}
+  .alert-fenix.warning { background: linear-gradient(80deg, #eabb19 60%, #ff9f0f 100%);}
+  .alert-fenix.error { background: linear-gradient(80deg, #c62222 65%, #ff2b36 100%);}
+  .alert-fenix .icon {font-size:1.4em;margin-right:7px;}
+</style>
+
+
+<h1 style="text-align:center;">👥 Alumnos del grupo {{ grupo.nombre }}</h1>
+<div class="bloque-nav">
+  <a href="{% url 'maestro:dashboard' %}">🏠 Dashboard</a>
+  <a href="{% url 'maestro:reporte_grupo' grupo.id %}">📊 Ver reporte</a>
+  <a href="{% url 'maestro:registrar_asistencia_grupo' grupo.id %}">✅ Registrar asistencia grupal</a>
+</div>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert-fenix {{ message.tags }}">
+      <span class="icon">
+        {% if "success" in message.tags %}✔️{% endif %}
+        {% if "error" in message.tags %}❌{% endif %}
+        {% if "warning" in message.tags %}⚠️{% endif %}
+        {% if "info" in message.tags %}ℹ️{% endif %}
+      </span>
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+<table>
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for alumno in alumnos %}
+        <tr>
+            <td>{{ alumno.user.get_full_name|default:alumno.user.username }}</td>
+            <td>
+                <a href="{% url 'maestro:ver_asistencias_alumno' alumno.id grupo.id %}" class="btn-ver">Ver asistencias</a>
+                {% if alumno.id %}
+                    <a href="{% url 'maestro:editar_progreso_alumno' grupo.id alumno.id %}" class="btn-ver">Editar progreso</a>
+                {% else %}
+                    <span style="color:red;">Sin perfil válido</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2">No hay alumnos en este grupo.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

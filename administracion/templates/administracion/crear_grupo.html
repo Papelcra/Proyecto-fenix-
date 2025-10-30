@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+body { background: #081d2f; }
+.panel-dark {
+  max-width: 480px; margin: 52px auto 30px auto; background: #10253b;
+  border-radius: 16px; padding: 36px;
+  box-shadow: 0 2px 20px #00bffd1a;
+}
+h2 { color: #00befc; text-align: center; margin-bottom: 38px;}
+.form-group { margin-bottom: 23px;}
+label { display: block; color:#aee5ff; font-weight: 600; margin-bottom: 7px;}
+input, select, textarea { width:100%; padding:9px; border-radius:7px; border:1px solid #003d74; background:#092139; color:#b7f5ff; }
+textarea { min-height: 37px;}
+.btn { font-size: 1em; font-weight: 600; border-radius: 7px; border: none; padding:.8em 1.2em; transition: background .2s;}
+.btn-info { background: #00bfff; color:#fff;}
+.btn-info:hover { background:#388db4; color:#fff;}
+.btn-secondary { background:#121a3a; color:#a8e7ff; margin-top:18px; display:inline-block;}
+.btn-secondary:hover { background:#092139; color:#00befc;}
+</style>
+<div class="panel-dark">
+  <h2>Crear Grupo</h2>
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label>Nombre:</label>
+      <input type="text" name="nombre" required>
+    </div>
+    <div class="form-group">
+      <label>Descripción:</label>
+      <textarea name="descripcion"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Profesor:</label>
+      <select name="profesor">
+        <option value="">-- Sin profesor --</option>
+        {% for profe in profesores %}
+          <option value="{{ profe.id }}">{{ profe.user.get_full_name|default:profe.user.username }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-info" style="width:100%;">Crear grupo</button>
+  </form>
+  <a href="{% url 'administracion:panel_usuarios' %}" class="btn btn-secondary" style="width:100%;">⬅ Volver al panel</a>
+</div>
+{% endblock %}

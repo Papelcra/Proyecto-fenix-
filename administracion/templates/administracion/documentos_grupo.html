@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- BARRA DE NAVEGACIÓN UNIVERSAL -->
+<style>
+.navbar-admin {
+  width: 100%; background: #084a97; height:54px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 2px 11px #0c293c52; margin-bottom: 30px;
+  padding: 0 36px 0 22px;
+}
+.navbar-admin .logo { color: #fff; font-size: 1.32em; font-weight:700; letter-spacing:1px; }
+.navbar-admin .nav-links a {
+  color: #eaf8ff; margin:0 12px; font-weight:600; font-size:1.1em; text-decoration: none;
+  padding: 3px 11px; border-radius:7px; transition:.17s;
+}
+.navbar-admin .nav-links a:hover,
+.navbar-admin .nav-links a.active {
+  background: #00bfff; color:#0e2948;
+}
+.navbar-admin .nav-right {
+  display: flex; align-items: center;
+}
+.navbar-admin .nav-user { color:#ffffae; font-weight:700; margin-right:22px; }
+.navbar-admin .nav-btn {
+  background:#0057a3; color:#fff; border:none; border-radius:8px; padding:7px 16px; font-weight:600; cursor:pointer;
+}
+.navbar-admin .nav-btn:hover { background:#00bfff; color:#092139;}
+</style>
+<div class="navbar-admin">
+  <span class="logo">Club Fénix</span>
+  <div class="nav-links">
+    <a href="{% url 'administracion:dashboard_admin' %}">Dashboard</a>
+    <a href="{% url 'administracion:panel_usuarios' %}">Panel de Usuarios</a>
+    <a href="{% url 'administracion:crear_usuario' %}">Crear Usuario</a>
+    <a href="{% url 'administracion:crear_grupo' %}">Crear Grupo</a>
+    <a href="{% url 'administracion:validar_documentos' %}">Validar Documentos</a>
+  </div>
+  <div class="nav-right">
+    <span class="nav-user">Hola, {{ request.user.username }}</span>
+    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+      {% csrf_token %}
+      <button class="nav-btn" type="submit">Cerrar sesión</button>
+    </form>
+  </div>
+</div>
+
+<!-- ESTILOS DEL PANEL PRINCIPAL -->
+<style>
+body { background:#081d2f;}
+.doc-panel {
+  max-width:1150px; margin:42px auto; background:#10253b; border-radius:17px;padding:36px;
+  box-shadow: 0 2px 22px #00bffd22;
+}
+h2 { text-align:center; color:#00befc; margin-bottom:30px;}
+table { width:100%; border-collapse:collapse; margin-top:17px; }
+th, td { border-bottom:1px solid #00bfff22; text-align:center; padding:11px;}
+th { background: #001a33; color: #13cdf1; font-weight: 600; }
+td { color: #fff; }
+input[type="checkbox"] {
+  accent-color: #00bfff; width: 21px; height: 21px;
+}
+.btn-success { background:#00dbb8; color:#fff; margin-top:11px;}
+.btn-success:hover { background:#15f38e; color:#303e4d;}
+.btn-secondary { background:#121a3a; color:#a8e7ff; margin-top:16px; display:inline-block;}
+.btn-secondary:hover { background:#092139; color:#00befc;}
+</style>
+<div class="doc-panel">
+<h2>Documentos de {{ grupo.nombre }}</h2>
+<form method="post">
+  {% csrf_token %}
+  <table>
+    <tr>
+      <th>Documento</th>
+      {% for alumno in alumnos %}
+        <th>{{ alumno.user.get_full_name|default:alumno.user.username }}</th>
+      {% endfor %}
+    </tr>
+    {% for doc in documentos %}
+    <tr>
+      <td style="color:#37e6ff;">{{ doc.archivo.name }}</td>
+      {% for alumno in alumnos %}
+        <td style="color:#fff;">
+          <input type="checkbox" name="{{ doc.id }}_{{ alumno.id }}" 
+          {% if alumno in doc.alumnos_validado.all %}checked{% endif %}>
+        </td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </table>
+  <button type="submit" class="btn btn-success">Guardar cambios</button>
+</form>
+<a href="{% url 'administracion:panel_usuarios' %}" class="btn btn-secondary">⬅ Volver al panel</a>
+</div>
+{% endblock %}

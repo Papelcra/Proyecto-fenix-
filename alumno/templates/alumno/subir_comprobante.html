@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Subir Comprobante de Pago{% endblock %}
+{% block content %}
+<style>
+.upload-panel {max-width:430px;margin:55px auto;background:#173457;padding:32px;border-radius:15px;box-shadow:0 2px 18px #14babf9c;}
+h2 {color:#32c3fe;margin-bottom:23px;}
+button {background:#14babf;color:#fff;border-radius:10px;padding:9px 31px;font-weight:600;border:none;}
+button:hover {background:#0991a2;}
+</style>
+<div class="upload-panel">
+  <h2>Subir comprobante del pago asignado</h2>
+  <p><strong>Alumno:</strong> {{ pago.alumno.user.get_full_name }}</p>
+  <p><strong>Monto:</strong> ${{ pago.monto }}</p>
+  <p><strong>Descripción:</strong> {{ pago.descripcion }}</p>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Enviar comprobante</button>
+  </form>
+  <a href="{% url 'alumno:pagos' %}">← Volver a pagos</a>
+</div>
+{% endblock %}

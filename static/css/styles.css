@@ -1,0 +1,155 @@
+/* ====== ESTILO GENERAL CLUB FÉNIX DEV ====== */
+:root {
+    --color-fondo: #0f1117;
+    --color-secundario: #151820;
+    --color-primario: #007bff;
+    --color-acento: #00bcd4;
+    --color-texto: #eaeaea;
+    --color-gris: #8a8a8a;
+    --transicion: 0.3s ease;
+    --radio: 12px;
+    --sombra: 0 0 20px rgba(0, 123, 255, 0.15);
+    --fuente: 'Poppins', sans-serif;
+}
+
+/* ====== RESETEO ====== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    font-family: var(--fuente);
+    line-height: 1.6;
+}
+
+/* ====== HEADER ====== */
+.header {
+    background-color: var(--color-secundario);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 3rem;
+    box-shadow: var(--sombra);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.titulo {
+    font-size: 1.5rem;
+    color: var(--color-primario);
+    font-weight: 600;
+}
+
+/* ====== NAVEGACIÓN ====== */
+.nav a {
+    color: var(--color-texto);
+    text-decoration: none;
+    margin-left: 1.5rem;
+    font-weight: 500;
+    transition: var(--transicion);
+}
+
+.nav a:hover {
+    color: var(--color-acento);
+}
+
+/* ====== SECCIÓN HERO ====== */
+.hero {
+    text-align: center;
+    padding: 5rem 2rem;
+    background: linear-gradient(180deg, rgba(0,0,0,0.3), transparent);
+}
+
+.hero h2 {
+    font-size: 2.5rem;
+    color: var(--color-acento);
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    color: var(--color-gris);
+    max-width: 600px;
+    margin: 0 auto 2rem;
+}
+
+.btn {
+    background-color: var(--color-primario);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radio);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transicion);
+    box-shadow: var(--sombra);
+}
+
+.btn:hover {
+    background-color: var(--color-acento);
+    box-shadow: 0 0 15px var(--color-acento);
+}
+
+/* ====== SECCIÓN INFO ====== */
+.info {
+    padding: 3rem 2rem;
+    text-align: center;
+}
+
+.info h3 {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    color: var(--color-primario);
+}
+
+.cards {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.card {
+    background-color: var(--color-secundario);
+    border-radius: var(--radio);
+    padding: 1.5rem;
+    width: 280px;
+    box-shadow: var(--sombra);
+    transition: transform var(--transicion), box-shadow var(--transicion);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px var(--color-acento);
+}
+
+.card h4 {
+    color: var(--color-acento);
+    margin-bottom: 0.5rem;
+}
+
+/* ====== FOOTER ====== */
+.footer {
+    background-color: var(--color-secundario);
+    text-align: center;
+    padding: 1rem;
+    color: var(--color-gris);
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    margin-top: 3rem;
+}

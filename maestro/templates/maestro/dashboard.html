@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard Maestro | Club Fénix{% endblock %}
+{% block content %}
+<style>
+body {
+  background: linear-gradient(to right, #0a0a0a, #002b5b);
+  color: white;
+}
+.contenedor-botones-superior {
+  max-width:900px; margin:0 auto 22px auto; display:flex; gap:22px; justify-content:center;
+}
+.btn-agregar-clase, .btn-listar-clases {
+  display: block;
+  background: linear-gradient(90deg, #00bfff 70%, #0076a3 100%);
+  color: #fff;
+  font-size: 1.17rem;
+  font-weight: bold;
+  padding: .9em 2.2em;
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 3px 14px #00cfff40;
+  transition: background .19s, color .14s, box-shadow .19s;
+  letter-spacing: .5px;
+  cursor: pointer;
+  text-align:center;
+  text-decoration:none;
+}
+.btn-agregar-clase:hover, .btn-listar-clases:hover {
+  background: #0099cc;
+  color: #eaffff;
+  box-shadow: 0 8px 35px #00bffff0;
+}
+.grupos-contenedor {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+.tarjeta-grupo {
+  background: rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 2rem;
+  border: 1.5px solid #00bfff44;
+  box-shadow: 0 4px 18px #001f3f44;
+  margin-bottom: 2rem;
+  transition: box-shadow 0.3s, border 0.3s;
+}
+.tarjeta-grupo:hover {
+  box-shadow: 0 8px 32px #00bfff55;
+  border: 2px solid #00bfff;
+}
+.tarjeta-grupo .grupo-nombre {
+  color: #00bfff;
+  margin-bottom: .6rem;
+  font-size: 1.45rem;
+  font-weight: bold;
+}
+.tarjeta-grupo .grupo-acciones a {
+  margin: 4px 7px 0 0;
+  display: inline-block;
+  padding: 0.6rem 1.3rem;
+  background: #001f3f;
+  color: #00bfff;
+  border: 1px solid #00bfff44;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.tarjeta-grupo .grupo-acciones a:hover {
+  background: #00bfff;
+  color: #fff;
+  border-color: #00bfff;
+}
+.alert-fenix { max-width: 540px; margin: 18px auto 22px auto; background: linear-gradient(90deg, #004aad 70%, #00bfff 100%); color: #fff; border-radius: 10px; padding: 1.2em 2em; box-shadow: 0 4px 20px #00bfff44; font-size: 1.18em; border-left: 7px solid #00ffea; font-weight: bold; letter-spacing: .8px; display: flex; align-items: center; gap: 12px; animation: aparecerAlertFenix 1s cubic-bezier(.16,1,.29,.99);}
+@keyframes aparecerAlertFenix {0% {transform: translateY(-25px); opacity:0;} 100% {transform: translateY(0); opacity:1;}}
+.alert-fenix.success { background: linear-gradient(90deg, #00938f 65%, #25caa5 100%);}
+.alert-fenix.info { background: linear-gradient(90deg, #004aad 70%, #00bfff 100%);}
+.alert-fenix.warning { background: linear-gradient(80deg, #eabb19 60%, #ff9f0f 100%);}
+.alert-fenix.error { background: linear-gradient(80deg, #c62222 65%, #ff2b36 100%);}
+.alert-fenix .icon {font-size:1.4em;margin-right:7px;}
+</style>
+
+<h1 style="text-align:center;">🏊‍♂️ Panel del Maestro</h1>
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert-fenix {{ message.tags }}">
+      <span class="icon">
+        {% if "success" in message.tags %}✔️{% endif %}
+        {% if "error" in message.tags %}❌{% endif %}
+        {% if "warning" in message.tags %}⚠️{% endif %}
+        {% if "info" in message.tags %}ℹ️{% endif %}
+      </span>
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+<div class="contenedor-botones-superior">
+  <a href="{% url 'maestro:crear_clase' %}" class="btn-agregar-clase">➕ Agregar nueva clase</a>
+  <a href="{% url 'maestro:listar_clases' %}" class="btn-listar-clases">📋 Ver listado de clases</a>
+</div>
+
+<h2 style="color:#00bfff;text-align:center;">Grupos a tu cargo</h2>
+<div class="grupos-contenedor">
+  {% for grupo in grupos %}
+  <div class="tarjeta-grupo">
+    <div class="grupo-nombre">{{ grupo.nombre }}</div>
+    <div class="grupo-acciones">
+      <a href="{% url 'maestro:alumnos_por_grupo' grupo.id %}">👥 Ver alumnos</a>
+      <a href="{% url 'maestro:reporte_grupo' grupo.id %}">📊 Ver reporte</a>
+      <a href="{% url 'maestro:registrar_asistencia_grupo' grupo.id %}">✅ Registrar asistencia</a>
+    </div>
+  </div>
+  {% empty %}
+  <div class="tarjeta-grupo">
+    <div>No tienes grupos asignados.</div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

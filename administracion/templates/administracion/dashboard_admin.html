@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block title %}Panel Administrador | Club Fénix{% endblock %}
+{% block content %}
+<style>
+body {
+  background: linear-gradient(to right, #112b43, #007fff 99%);
+  color: #fff;
+}
+.panel-admin {
+  max-width: 1200px;
+  margin: auto;
+  padding: 2.5rem 1rem;
+}
+.panel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px,1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+.tarjeta-admin {
+  background: linear-gradient(135deg,#0e223c 70%,#00bfff 160%);
+  border-radius: 16px;
+  box-shadow: 0 4px 32px #00cfff39;
+  padding: 2.2rem 1.6rem;
+  border: 2px solid #00bfff44;
+  color: #f4fcff;
+  transition:.13s;
+}
+.tarjeta-admin:hover {
+  box-shadow: 0 8px 42px #00aaff75;
+  transform: translateY(-3px) scale(1.02);
+  border-color:#00fff3cc;
+}
+.tarjeta-admin h3 {
+  font-size: 1.36rem;
+  color: #23ebff;
+  margin-bottom: .5em;
+  font-weight:700;
+}
+.tarjeta-admin ul {
+  margin-bottom:.8em; color:#cbeaff; font-size:1.06em;
+}
+.tarjeta-admin .btn-accion {
+  margin-top: .8em;
+  background: linear-gradient(90deg,#00c6fa 65%,#0e5574 100%);
+  color: #fff;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  font-size: 1.09em;
+  padding: .7em 1.7em;
+  cursor: pointer;
+  transition: background .17s;
+  box-shadow: 0 2px 11px #18bfff30;
+  letter-spacing:.5px;
+}
+.tarjeta-admin .btn-accion:hover {
+  background: #0099cc;
+}
+h1 { font-size:2.2em; color:#00bfff;margin-bottom:28px; font-weight:700; text-align:center;}
+.alert-fenix {
+  max-width:600px; margin:18px auto 22px auto;
+  background: linear-gradient(90deg,#114caf 70%,#00bfff 99%);
+  color:#fff; border-radius:10px; padding:1.2em 2em;
+  box-shadow:0 4px 20px #00bfff44; font-size:1.18em;
+  border-left:7px solid #00ffea; font-weight:bold; letter-spacing:.8px;
+  display:flex; align-items:center; gap:12px;
+}
+@media(max-width:900px){
+  .panel-admin{padding:8px;}
+  .panel-grid{gap:10px;}
+  .tarjeta-admin{padding:1.2em;}
+}
+</style>
+
+<h1>Panel de administración</h1>
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert-fenix {{ message.tags }}">
+      <span class="icon">
+        {% if "success" in message.tags %}✔️{% endif %}
+        {% if "error" in message.tags %}❌{% endif %}
+        {% if "warning" in message.tags %}⚠️{% endif %}
+        {% if "info"   in message.tags %}ℹ️{% endif %}
+      </span>
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+<div class="panel-admin">
+  <div class="panel-grid">
+    <div class="tarjeta-admin">
+      <h3>👤 Usuarios y roles</h3>
+      <ul>
+        <li>Crear/editar alumnos y asignar a grupos/maestros</li>
+        <li>Crear maestros y asignarlos a grupos</li>
+        <li>Ver todos los usuarios</li>
+      </ul>
+      <button class="btn-accion" onclick="window.location.href='{% url 'administracion:panel_usuarios' %}'">Gestionar usuarios</button>
+    </div>
+    <div class="tarjeta-admin">
+      <h3>💳 Pagos y membresías</h3>
+      <ul>
+        <li>Registrar pagos recibidos</li>
+        <li>Ver historial de pago de cada alumno</li>
+        <li>Validar membresías activas</li>
+      </ul>
+      <button class="btn-accion" onclick="window.location.href='{% url 'administracion:pagos_admin' %}'">Pagos y membresías</button>
+    </div>
+    <div class="tarjeta-admin">
+      <h3>📝 Validar documentos</h3>
+      <ul>
+        <li>Cédula</li>
+        <li>Afiliación EPS</li>
+        <li>Formulario autorización</li>
+      </ul>
+      <button class="btn-accion" onclick="window.location.href='{% url 'administracion:validar_documentos' %}'">Validar documentos</button>
+    </div>
+    <div class="tarjeta-admin">
+      <h3>📊 Supervisar reportes</h3>
+      <ul>
+        <li>Ver desempeño y progreso de alumnos</li>
+        <li>Supervisar grupos y profesores</li>
+      </ul>
+      <button class="btn-accion" onclick="window.location.href='{% url 'administracion:supervision_reportes' %}'">Reportes académicos</button>
+    </div>
+    <div class="tarjeta-admin">
+      <h3>📅 Clases y agenda</h3>
+      <ul>
+        <li>Ver todas las clases agendadas</li>
+        <li>Consultar clases por grupo/profesor</li>
+        <li>Llevar control de asistencia y cronograma</li>
+      </ul>
+      <button class="btn-accion" onclick="window.location.href='{% url 'administracion:clases' %}'">Gestionar clases</button>
+    </div>
+  </div>
+</div>
+{% endblock %}

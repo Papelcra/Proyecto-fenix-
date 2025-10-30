@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  body {
+    background: linear-gradient(to right, #0a0a0a, #002b5b)!important;
+    color: white;
+  }
+  .progreso-formulario {
+    margin: 32px auto 14px auto;
+    padding: 2.5em 2.5em 2em 2.5em;
+    max-width: 530px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 12px;
+    box-shadow: 0 2px 30px #00bfff22;
+  }
+  .progreso-formulario label {
+    font-weight: 600;
+    color: #00bfff;
+  }
+  .progreso-formulario select,
+  .progreso-formulario textarea {
+    width: 95%;
+    padding: .8em;
+    margin-bottom: 1.1em;
+    background: #001a33;
+    color: #fff;
+    border: 1.5px solid #00bfff55;
+    border-radius: 7px;
+    font-size: 1.1em;
+    transition: border 0.2s;
+    margin-top: 4px;
+  }
+  .progreso-formulario textarea {
+    min-height: 110px;
+    max-height: 350px;
+    resize: vertical;
+    font-size: 1.13em;
+  }
+  .progreso-formulario button.btn {
+    background: #00bfff;
+    color: white;
+    font-weight: 600;
+    border: none;
+    padding: .8em 1.8em;
+    border-radius: 7px;
+    font-size: 1.08em;
+    cursor: pointer;
+    margin-top: 7px;
+    margin-bottom: 11px;
+    transition: background 0.25s;
+  }
+  .progreso-formulario button.btn:hover { background: #008fcc; }
+  .historial-progreso {
+    max-width: 530px;
+    margin: 0 auto 3em auto;
+    background: rgba(0,191,255,0.09);
+    border-radius: 10px;
+    padding: 1.3em 2em;
+    box-shadow: 0 4px 18px #00bfff22;
+  }
+  .historial-progreso h3 {
+    color: #25caa5;
+    margin-top: 0;
+    font-size: 1.18em;
+    margin-bottom: 8px;
+  }
+  .historial-progreso ul {
+    list-style: disc;
+    margin-left: 1.2em;
+    margin-bottom: 0;
+  }
+  .historial-progreso li {
+    margin-bottom: 13px;
+    font-size: 1.12em;
+    color: #e0f7fa;
+    background: rgba(0,185,255,0.10);
+    border-radius: 3px;
+    padding: 7px 11px 5px 11px;
+  }
+  .volver-link {
+    display:inline-block;
+    margin-top: 12px;
+    background: #002848;
+    color: #00bfff;
+    padding: .6em 1.8em;
+    border-radius: 7px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid #00bfff44;
+    transition: background 0.2s, color 0.2s;
+  }
+  .volver-link:hover { background: #00bfff; color:#fff; }
+</style>
+
+<h2 style="text-align:center;color:#00bfff;font-size:1.6em;font-weight:700;margin:18px 0 14px 0;">Editar Progreso de {{ alumno.user.get_full_name|default:alumno.user.username }}</h2>
+
+<form method="post" class="progreso-formulario">
+  {% csrf_token %}
+  <label for="nivel">Nivel del alumno:</label>
+  <select name="nivel" id="nivel" required>
+    <option value="" hidden>Selecciona el nivel</option>
+    {% for nivel in niveles %}
+      <option value="{{ nivel.id }}">{{ nivel.nombre }}</option>
+    {% endfor %}
+  </select>
+
+  <label for="comentarios">Observaciones / Notas del profesor:</label>
+  <textarea name="comentarios" id="comentarios" rows="6" placeholder="Escribe observaciones sobre el desempeño, avance o temas de refuerzo..."></textarea>
+
+  <label style="display:inline-block;margin-top:8px;">
+    <input type="checkbox" name="completado" style="transform: scale(1.27); margin-right:6px;">
+    Nivel completado
+  </label>
+  <br>
+  <button type="submit" class="btn">Guardar progreso</button>
+</form>
+
+<div class="historial-progreso">
+  <h3>Histórico de progreso del alumno</h3>
+  <ul>
+    {% for progreso in progresos %}
+      <li>
+        <strong>{{ progreso.nivel.nombre }}</strong>,
+        Completado: <span style="color: #29fa81;">{{ progreso.completado|yesno:"Sí,No" }}</span>
+        <br>
+        <span style="color:#a8e4fa;">Observación:</span> {{ progreso.comentarios }}
+        <br>
+        <span style="font-size:.96em;color:#77ecf7;">Fecha registro: {{ progreso.fecha }}</span>
+      </li>
+    {% empty %}
+      <li>No hay progreso registrado.</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div style="text-align:center;">
+  <a href="{% url 'maestro:alumnos_por_grupo' grupo.id %}" class="volver-link">⬅ Volver al grupo</a>
+</div>
+{% endblock %}

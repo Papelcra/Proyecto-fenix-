@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+{% block title %}Asistencias del alumno | Club Fénix{% endblock %}
+{% block content %}
+<style>
+body {
+  background: linear-gradient(to right, #0a0a0a, #002b5b);
+  color: white;
+}
+.bloque-nav {
+  margin-bottom: 16px;
+}
+.bloque-nav a {
+  background: #001a33;
+  color: #00bfff;
+  border-radius: 5px;
+  font-weight: 600;
+  padding: 7px 20px;
+  border: 1px solid #00bfff44;
+  margin-right: 8px;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+.bloque-nav a:hover {
+  background: #00bfff;
+  color: #fff;
+}
+.card-alumno {
+  background: rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 1.5rem 2rem;
+  border: 1.5px solid #00bfff44;
+  box-shadow: 0 4px 18px #001f3f44;
+  margin-bottom: 2rem;
+  max-width: 540px;
+  margin-left:auto; margin-right:auto;
+}
+.card-alumno h2 {
+  color: #00bfff;
+  margin-bottom: 1.2rem;
+  text-align: center;
+}
+.lista-asistencias {
+  list-style-type: none;
+  padding: 0;
+  margin-bottom: 2.2rem;
+}
+.item-asistencia {
+  background: rgba(0,191,255,0.06);
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+  border-left: 4px solid #00bfff;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.item-asistencia:last-child {
+  margin-bottom: 0;
+}
+.badge-presente {
+  background: rgba(46,204,113,.12);
+  color: #2ecc71;
+  border-radius: 8px;
+  padding: 0.4em 1.2em;
+  font-weight: bold;
+}
+.badge-ausente {
+  background: rgba(231,76,60,.12);
+  color: #e74c3c;
+  border-radius: 8px;
+  padding: 0.4em 1.2em;
+  font-weight: bold;
+}
+.observacion {
+  font-style: italic;
+  color: #fff;
+  font-size:1em;
+  opacity:0.82;
+  margin-left:1em;
+}
+.form-tarjeta {
+  background: rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 1.3rem 2rem 1.7rem 2rem;
+  border: 1.5px solid #00bfff40;
+  margin-top: 1.5em;
+  box-shadow: 0 2px 12px #001f3f33;
+}
+.form-tarjeta label {
+  display: block;
+  margin: 14px 0 6px 0;
+  color: #00bfff;
+  font-weight: 600;
+  font-size: 1em;
+}
+.form-tarjeta input[type="date"],
+.form-tarjeta input[type="text"] {
+  width: 100%;
+  padding: 0.7em 0.9em;
+  background: rgba(255,255,255,0.18);
+  border: 1.2px solid #00bfff44;
+  border-radius: 7px;
+  color: #fff;
+  margin-bottom: 10px;
+  margin-top: 2px;
+}
+.form-tarjeta input[type="checkbox"] {
+  accent-color: #00bfff;
+  margin-right: 5px;
+}
+.form-tarjeta select {
+  width: 100%;
+  padding: 0.7em 0.9em;
+  background: rgba(255,255,255,0.18);
+  border: 1.2px solid #00bfff44;
+  border-radius: 7px;
+  color: #fff;
+  margin-bottom: 12px;
+  font-size:1em;
+}
+.form-tarjeta button {
+  margin-top: 14px;
+  padding: 0.8em 2em;
+  background: #00bfff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.07em;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px #00bfff33;
+}
+.form-tarjeta button:hover {
+  background: #0099cc;
+}
+.alert-fenix { max-width: 540px; margin: 18px auto 22px auto; background: linear-gradient(90deg, #004aad 70%, #00bfff 100%); color: #fff; border-radius: 10px; padding: 1.2em 2em; box-shadow: 0 4px 20px #00bfff44; font-size: 1.18em; border-left: 7px solid #00ffea; font-weight: bold; letter-spacing: .8px; display: flex; align-items: center; gap: 12px; animation: aparecerAlertFenix 1s cubic-bezier(.16,1,.29,.99);}
+@keyframes aparecerAlertFenix {0% {transform: translateY(-25px); opacity:0;} 100% {transform: translateY(0); opacity:1;}
+}
+.alert-fenix.success { background: linear-gradient(90deg, #00938f 65%, #25caa5 100%);}
+.alert-fenix.info { background: linear-gradient(90deg, #004aad 70%, #00bfff 100%);}
+.alert-fenix.warning { background: linear-gradient(80deg, #eabb19 60%, #ff9f0f 100%);}
+.alert-fenix.error { background: linear-gradient(80deg, #c62222 65%, #ff2b36 100%);}
+.alert-fenix .icon {font-size:1.4em;margin-right:7px;}
+</style>
+
+<h2 style="text-align:center;margin-top:10px;">Asistencias de {{ alumno.user.get_full_name|default:alumno.user.username }}</h2>
+
+<div class="bloque-nav">
+  <a href="{% url 'maestro:alumnos_por_grupo' grupo.id %}">👥 Volver al grupo</a>
+  <a href="{% url 'maestro:reporte_grupo' grupo.id %}">📊 Ver reporte del grupo</a>
+</div>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert-fenix {{ message.tags }}">
+      <span class="icon">
+        {% if "success" in message.tags %}✔️{% endif %}
+        {% if "error" in message.tags %}❌{% endif %}
+        {% if "warning" in message.tags %}⚠️{% endif %}
+        {% if "info" in message.tags %}ℹ️{% endif %}
+      </span>
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+<div class="card-alumno">
+  <h2>Historial</h2>
+  <ul class="lista-asistencias">
+    {% for asistencia in asistencias %}
+    <li class="item-asistencia">
+      <span>
+        {{ asistencia.fecha }}
+        {% if asistencia.clase %}
+          <b style="color:#ffcb13;"> • Clase: </b>
+          <span style="color:#fff;">{{ asistencia.clase.descripcion|truncatechars:30 }}</span>
+        {% endif %}
+        {% if asistencia.presente %}
+          <span class="badge-presente">Presente</span>
+        {% else %}
+          <span class="badge-ausente">Ausente</span>
+        {% endif %}
+        {% if asistencia.observacion %}
+          <span class="observacion">"{{ asistencia.observacion }}"</span>
+        {% endif %}
+      </span>
+    </li>
+    {% empty %}
+    <li class="item-asistencia">No hay registros de asistencia.</li>
+    {% endfor %}
+  </ul>
+  <form method="post" class="form-tarjeta">
+      {% csrf_token %}
+      <label for="clase_id">Clase:</label>
+      <select name="clase_id" required>
+        <option value="">Selecciona la clase</option>
+        {% for clase in clases %}
+          <option value="{{ clase.id }}">{{ clase.fecha|date:"d M Y" }} - {{ clase.descripcion|truncatechars:35 }}</option>
+        {% endfor %}
+      </select>
+      <label for="fecha">Fecha:</label>
+      <input type="date" name="fecha" value="{{ today|date:'Y-m-d' }}">
+      <label for="presente">
+        <input type="checkbox" name="presente"> Presente
+      </label>
+      <label for="observacion">Observación (opcional):</label>
+      <input type="text" name="observacion" placeholder="Ej: Llegó tarde">
+      <button type="submit">Guardar asistencia</button>
+  </form>
+</div>
+{% endblock %}

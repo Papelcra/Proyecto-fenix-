@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+body { background:#081d2f; }
+.panel-dark {
+  max-width:1120px; margin:45px auto; background:#10253b; border-radius:17px;padding:42px;
+  box-shadow: 0 2px 22px #00bffd22;
+}
+h1, h2 { color:#00bfff; font-weight:700;}
+.table-title { margin-top:38px;}
+.main-table {
+  width:100%;
+  background:#132947;
+  border-radius: 13px;
+  border-collapse: separate;
+  border-spacing: 0;
+  box-shadow:0 2px 15px #0b153322;
+  margin-bottom:24px;
+  overflow:hidden;
+}
+.main-table thead th {
+  background: #0f2545;
+  color: #23ebff; font-weight: 600; border-bottom:2px solid #1484af;
+}
+.main-table td, .main-table th {
+  color: #fff;
+  border-bottom:1px solid #22557944;
+  padding:11px;
+}
+.action-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  margin:0;
+}
+.btn-action {
+  border: 2px solid #17e6ff; border-radius:8px; color:#00befc; background:#0d233d;
+  padding:4px 15px; font-weight:600; transition:0.18s; display:inline-flex; align-items:center; gap:6px;
+}
+.btn-action:hover { background:#092139; color:#bdfaff; border-color:#61eaff;}
+.btn-edit { background:#007cff; color:#fff!important; border-radius:7px; padding:2px 16px;}
+.btn-edit:hover { background:#64baff;}
+.btn-outline-danger { background:#bf2121; color:#fff!important; border-radius:7px; padding:2px 16px;}
+.btn-outline-danger:hover { background:#ef4a67;}
+.btn-success { background:#00dbb8; color:#fff;}
+.btn-success:hover { background:#15f38e; color:#303e4d;}
+.btn-dashboard { background:#10253b; color:#00dbb8!important; border:2px solid #00dbb8; border-radius:10px; font-weight:600; font-size:1.1em; padding:9px 28px; transition:0.2s;}
+.btn-dashboard:hover { background:#00dbb8; color:#10253b!important;}
+@media (max-width: 900px) {
+  .panel-dark {padding:20px;}
+  .main-table td, .main-table th {font-size:0.95em;padding:7px;}
+  .action-btns {gap:4px;}
+}
+</style>
+<div class="panel-dark">
+  <!-- VOLVER AL DASHBOARD -->
+  <a href="{% url 'administracion:dashboard_admin' %}" class="btn-dashboard mb-3">⬅ Volver al Dashboard</a>
+
+  <h1 style="margin-bottom:12px;">Panel de Administración</h1>
+  <p style="color:#fff;">Bienvenido, {{ request.user.username }}</p>
+
+  <div style="margin-bottom:38px;">
+    <a href="{% url 'administracion:crear_usuario' %}" class="btn btn-success me-2">➕ Crear nuevo usuario</a>
+    <a href="{% url 'administracion:crear_grupo' %}" class="btn btn-success">➕ Crear nuevo grupo</a>
+  </div>
+
+  <!-- Profesores -->
+  <h2 class="table-title">Profesores</h2>
+  {% if profesores %}
+  <table class="main-table">
+    <thead>
+      <tr>
+        <th>Usuario</th>
+        <th>Email</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for profe in profesores %}
+      <tr>
+        <td>{{ profe.user.username }}</td>
+        <td>{{ profe.user.email }}</td>
+        <td>
+          <div class="action-btns">
+            <a href="{% url 'administracion:editar_usuario' profe.id %}" class="btn btn-edit btn-sm"><span>✏️ Editar</span></a>
+            <a href="{% url 'administracion:eliminar_usuario' profe.id %}" class="btn btn-outline-danger btn-sm"
+             onclick="return confirm('¿Eliminar este profesor?');"><span>🗑️ Eliminar</span></a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p style="color:#fff;">No hay profesores registrados.</p>
+  {% endif %}
+
+  <!-- Alumnos -->
+  <h2 class="table-title">Alumnos</h2>
+  {% if alumnos %}
+  <table class="main-table">
+    <thead>
+      <tr>
+        <th>Usuario</th>
+        <th>Email</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for alumno in alumnos %}
+      <tr>
+        <td>{{ alumno.user.username }}</td>
+        <td>{{ alumno.user.email }}</td>
+        <td>
+          <div class="action-btns">
+            <a href="{% url 'administracion:editar_usuario' alumno.id %}" class="btn btn-edit btn-sm"><span>✏️ Editar</span></a>
+            <a href="{% url 'administracion:eliminar_usuario' alumno.id %}" class="btn btn-outline-danger btn-sm"
+             onclick="return confirm('¿Eliminar este alumno?');"><span>🗑️ Eliminar</span></a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p style="color:#fff;">No hay alumnos registrados.</p>
+  {% endif %}
+
+  <!-- Grupos -->
+  <h2 class="table-title">Grupos</h2>
+  {% if grupos %}
+  <table class="main-table">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for grupo in grupos %}
+      <tr>
+        <td>{{ grupo.nombre }}</td>
+        <td>{{ grupo.descripcion }}</td>
+        <td>
+          <div class="action-btns">
+            <a href="{% url 'administracion:asignar_alumnos_grupo' grupo.id %}" class="btn-action btn-sm">👥 Asignar alumnos</a>
+            <a href="{% url 'administracion:subir_documento' grupo.id %}" class="btn-action btn-sm">📎 Subir documento</a>
+            <a href="{% url 'administracion:documentos_grupo' grupo.id %}" class="btn-action btn-sm">📋 Validar documentos</a>
+            <a href="{% url 'administracion:asignar_profesor_grupo' grupo.id %}" class="btn-action btn-sm">👨‍🏫 Asignar profesor</a>
+            <a href="{% url 'administracion:editar_grupo' grupo.id %}" class="btn btn-edit btn-sm">✏️ Editar</a>
+            <a href="{% url 'administracion:eliminar_grupo' grupo.id %}" class="btn btn-outline-danger btn-sm"
+             onclick="return confirm('¿Eliminar este grupo?');"><span>🗑️ Eliminar</span></a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p style="color:#fff;">No hay grupos creados.</p>
+  {% endif %}
+</div>
+{% endblock %}
