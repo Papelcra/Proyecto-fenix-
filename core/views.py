@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect
 from .models import *
 from .forms import *
+from django.http import HttpResponse
 
 # 🔹 Página de inicio
 def home(request):
@@ -40,3 +41,9 @@ def registrar_pago(request):
 def progreso_alumno(request):
     progreso = Progreso.objects.filter(alumno=request.user.perfil)
     return render(request, 'core/progreso.html', {'progreso': progreso})
+
+def crear_superusuario(request):
+    if not User.objects.filter(username='admin').exists():
+        User.objects.create_superuser('admin', 'admin@tuemail.com', 'tuseguro123')
+        return HttpResponse('Superusuario creado!')
+    return HttpResponse('Ya existe superusuario')
