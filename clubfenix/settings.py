@@ -1,18 +1,20 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import dj_database_url
 
 load_dotenv()
 
-# 🔹 BASE_DIR con Pathlib 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY
-SECRET_KEY = 'django-insecure-*b7$(qnh=jjaq^z%+f5$dsx_h&_imof@@2f5*71uyu@#23+d^t'
-DEBUG = True
-ALLOWED_HOSTS = []
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-*b7$(qnh=jjaq^z%+f5$dsx_h&_imof@@2f5*71uyu@#23+d^t')
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+ALLOWED_HOSTS = [
+    'proyecto-fenix-production.up.railway.app',
+    'localhost',
+    '127.0.0.1'
+]
 
-# 🔹 APPS INSTALADAS
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -20,8 +22,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    # Apps del proyecto
     'core',
     'inicio',
     'eventos',
@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     'alumno',
 ]
 
-# 🔹 MIDDLEWARE
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -43,11 +42,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'clubfenix.urls'
 
-# 🔹 TEMPLATES
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # ✅ Solo una definición de DIRS, limpia
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -63,19 +60,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'clubfenix.wsgi.application'
 
-# 🔹 BASE DE DATOS (MySQL)
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'club_fenix',
-        'USER': 'root',
-        'PASSWORD': '1014',
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
-}
+# --- BASE DE DATOS ---
+DATABASE_URL = os.environ.get('DATABASE_URL', '')
 
-# 🔹 VALIDACIÓN DE CONTRASEÑAS
+if DATABASE_URL:
+    # Cloud/Render/production database
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
+else:
+    # Local MySQL de desarrollo
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'club_fenix',
+            'USER': 'root',
+            'PASSWORD': '1014',
+            'HOST': 'localhost',
+            'PORT': '3306',
+        }
+    }
+
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -83,32 +92,20 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# 🔹 INTERNACIONALIZACIÓN
 LANGUAGE_CODE = 'es'
 TIME_ZONE = 'America/Bogota'
 USE_I18N = True
 USE_TZ = True
 
-# 🔹 ARCHIVOS ESTÁTICOS
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-
-# 🔹 CLAVE PRIMARIA POR DEFECTO
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# 🔹 CONFIGURACIÓN DE LOGIN / LOGOUT
-LOGIN_URL = '/login/'                 # página de login si no está autenticado
-LOGIN_REDIRECT_URL = '/'              # ignorado, usamos nuestra lógica en index
-LOGOUT_REDIRECT_URL = '/'
-MEDIA_URL = '/documentos/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'documentos')
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-import dj_database_url
-import os
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL')
-    )
-}
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+MEDIA_URL = '/documentos/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'documentos')
